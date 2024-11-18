@@ -1,0 +1,10 @@
+numpy 
+pandas 
+matplotlib
+plotly.express
+plotly.graph_objects
+streamlit
+datetime
+yfinance
+requests
+stocknews
