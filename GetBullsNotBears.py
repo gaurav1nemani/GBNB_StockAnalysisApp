@@ -186,7 +186,6 @@ elif menu=="Chart":
 elif menu=="Financials":
     
     stock=yf.Ticker(ticker)
-    fd=FundamentalData(key, output_format='pandas')
     
     options_list=["Balance Sheet","Cash Flow Statement","Income Statement"]
     get_type_financial=st.selectbox("Select type of financial data: ", options=options_list)
