@@ -10,13 +10,6 @@ import datetime as dt
 from datetime import datetime, timedelta
 import yfinance as yf
 import requests
-import urllib
-import warnings
-warnings.filterwarnings('ignore')
-import io
-import alpha_vantage
-from alpha_vantage.fundamentaldata import FundamentalData
-key='80DCTFIEL5C7VK9R'
 import stocknews
 from stocknews import StockNews
 
