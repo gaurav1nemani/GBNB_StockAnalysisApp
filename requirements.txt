@@ -1,8 +1,7 @@
 numpy 
 pandas 
 matplotlib
-plotly.express
-plotly.graph_objects
+plotly
 streamlit
 datetime
 yfinance
