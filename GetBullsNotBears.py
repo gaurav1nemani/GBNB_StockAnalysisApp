@@ -13,6 +13,7 @@ import yfinance as yf
 import requests
 import stocknews
 from stocknews import StockNews
+pip freeze > requirements.txt
 
 #reference: 1. Minh Notes, 2.Streamlit Documentation and Streamlit Community, 3. youtube: financial programing with Ritvick, CFA, 4. Youtube: Coding is Fun, 5. Youtube: Intrendias
 st.set_page_config(layout="wide")
@@ -336,3 +337,5 @@ elif menu=="Portfolio Management":
                     )
 
         st.plotly_chart(fig)
+
+
