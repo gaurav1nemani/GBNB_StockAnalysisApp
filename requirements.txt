@@ -7,4 +7,8 @@ streamlit_option_menu==0.3.2
 datetime==4.3 
 yfinance==0.1.63 
 requests==2.26.0 
-stocknews==0.1.2
+stocknews
+setuptools>=51.0.0
+git add requirements.txt 
+git commit -m "Fix requirements and ensure distutils availability" 
+git push
