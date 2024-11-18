@@ -43,7 +43,7 @@ st.sidebar.download_button("Download Data as CSV", data=csv, file_name=f'Stockda
 menu=option_menu(
     menu_title=None,
     options=["Summary", "Chart", "Financials", "Monte Carlo Simulation","News", "Portfolio Management"],
-    icons=["journal-text", "graph-up-arrow", "cash-coin", "bezier2", "news"],
+    icons=["journal-text", "graph-up-arrow", "cash-coin", "bezier2", "newspaper", "briefcase"],
     default_index=0,
     orientation="horizontal"
 )
@@ -186,7 +186,6 @@ elif menu=="Chart":
 elif menu=="Financials":
     
     stock=yf.Ticker(ticker)
-    fd=FundamentalData(key, output_format='pandas')
     
     options_list=["Balance Sheet","Cash Flow Statement","Income Statement"]
     get_type_financial=st.selectbox("Select type of financial data: ", options=options_list)
@@ -297,24 +296,43 @@ elif menu=="News":
 
 elif menu=="Portfolio Management":
     selected_stock=st.multiselect('Select the stocks to the portfolio: (recommended max. 10)', ticker_list)
-    
-    stocks_industries_list = { "Technology": ["AAPL", "GOOGL", "MSFT", "TSLA", "NVDA", "AMD", "INTU", "ADBE", "CSCO", "ORCL", "INTC", "IBM", "CRM"], 
-                        "Health Care": ["JNJ", "PFE", "MRK", "ABBV", "UNH", "LLY", "VTRS", "GILD", "BIIB", "REGN", "AMGN", "ABT", "BMY"], 
-                        "Consumer Discretionary": ["AMZN", "TGT", "HD", "NKE", "COST", "MCD", "SBUX", "WMT", "LOW", "MOS", "PG", "PEP"], 
-                        "Financials": ["JPM", "BAC", "C", "GS", "WFC", "COF", "AXP", "USB", "BK", "AFL", "TRV", "ALL", "DFS"], 
-                        "Industrials": ["MMM", "GE", "HON", "UTX", "DOW", "CAT", "BA", "ETN", "DE", "ITT", "HMC", "LMT", "RTX"], 
-                        "Materials": ["LIN", "EMN", "DOW", "MMM", "CF", "LYB", "PCP", "ALB", "NEM", "PPG", "MMM", "ALXN", "MMM"], 
-                        "Real Estate": ["SPG", "ARE", "PSA", "REG", "STAG", "O", "WELL", "BXP", "DLR", "EQR", "PLD", "REIT", "SLG"], 
-                        "Utilities": ["D", "DUK", "NEE", "AES", "CMS", "EXC", "PG", "ED", "SRE", "WEC", "EIX", "DUK", "AES"], 
-                        "Communication Services": ["GOOGL", "META", "NFLX", "T", "CMCSA", "DIS", "VZ", "ATVI", "CHTR", "FOXA", "NFLX", "DIS"], 
-                        "Energy": ["XOM", "CVX", "COP", "SLB", "EOG", "PSX", "HAL", "OXY", "MRO", "CVX", "XOM", "COP"]
-                        }
-    selected_industry=st.multiselect('Select the industries of stocks to the portfolio: (recommended max. 10)', stocks_industries_list)
-
+        
     if selected_stock !='':
+        selected_stock_data = {} 
         for ticker in selected_stock:
-            selected_stock_weightage[ticker]=st.slider('Weightage of stock: '+str(ticker))
-            stock_data[ticker]=yf.download(ticker, start=start_date, end=end_date)
-            selected_daily_return=stock_data[ticker].pct_change()
+            data = yf.download(ticker, period="1y")
+            if not data.empty:
+                selected_stock_data[ticker] = data
 
+        sp500_data = yf.download('^GSPC', period="1y") 
+        sp500_data['Daily Return'] = sp500_data['Adj Close'].pct_change() 
+        sp500_data['Cumulative Return'] = (1 + sp500_data['Daily Return']).cumprod()
+        
+        fig=go.Figure()
 
+        for ticker, data in selected_stock_data.items(): 
+            data['Daily Return'] = data['Adj Close'].pct_change() 
+            data['Cumulative Return'] = (1 + data['Daily Return']).cumprod()
+
+        for ticker, data in selected_stock_data.items():
+            fig.add_trace(go.Scatter( 
+                        x=data.index, 
+                        y=data['Cumulative Return'], 
+                        mode='lines', 
+                        name=ticker 
+                    ))
+        
+        fig.add_trace(go.Scatter(
+            x=sp500_data.index,
+            y=sp500_data['Cumulative Return'],
+            mode='lines',
+            name='S&P 500',
+            line=dict(color='black')
+        ))
+        fig.update_layout( title='1-Year Return Comparison of Selected Stocks', 
+                    xaxis_title='Date', 
+                    yaxis_title='Cumulative Return', 
+                    legend_title='Stocks' 
+                    )
+
+        st.plotly_chart(fig)
