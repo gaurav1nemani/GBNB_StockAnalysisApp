@@ -3,6 +3,7 @@ pandas
 matplotlib
 plotly
 streamlit
+streamlit_option_menu
 datetime
 yfinance
 requests
