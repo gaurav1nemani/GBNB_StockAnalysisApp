@@ -2,6 +2,7 @@ numpy
 pandas
 matplotlib
 plotly
+plotly.subplots
 streamlit
 streamlit_option_menu
 datetime 
