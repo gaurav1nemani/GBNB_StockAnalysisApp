@@ -11,8 +11,8 @@ import datetime as dt
 from datetime import datetime, timedelta
 import yfinance as yf
 import requests
-# import stocknews
-# from stocknews import StockNews
+import stocknews
+from stocknews import StockNews
 
 #reference: 1. Minh Notes, 2.Streamlit Documentation and Streamlit Community, 3. youtube: financial programing with Ritvick, CFA, 4. Youtube: Coding is Fun, 5. Youtube: Intrendias
 st.set_page_config(layout="wide")
@@ -280,19 +280,19 @@ elif menu=="Monte Carlo Simulation":
     
     get_montecarlo(stock_data, random_seed, time_horizon, nbr_simulations)
 
-# elif menu=="News":
-#     st.header(f'News of {ticker}')
-#     sn=StockNews(ticker, save_news=False)
-#     news_data=sn.read_rss()
-#     for i in range(20):
-#         st.subheader(f'News Article {i+1}')
-#         st.write(news_data['published'][i])
-#         st.write(news_data['title'][i])
-#         st.write(news_data['summary'][i])
-#         sentiment_title_data=(news_data['sentiment_title'][i])
-#         st.write(f'Title Sentiment{sentiment_title_data}')
-#         sentiment_data=news_data['sentiment_summary'][i]
-#         st.write(f'News Sentiment{sentiment_data}')
+elif menu=="News":
+    st.header(f'News of {ticker}')
+    sn=StockNews(ticker, save_news=False)
+    news_data=sn.read_rss()
+    for i in range(20):
+        st.subheader(f'News Article {i+1}')
+        st.write(news_data['published'][i])
+        st.write(news_data['title'][i])
+        st.write(news_data['summary'][i])
+        sentiment_title_data=(news_data['sentiment_title'][i])
+        st.write(f'Title Sentiment: {sentiment_title_data}')
+        sentiment_data=news_data['sentiment_summary'][i]
+        st.write(f'News Sentiment: {sentiment_data}')
 
 elif menu=="Portfolio Management":
     selected_stock=st.multiselect('Select the stocks to the portfolio: (recommended max. 10)', ticker_list)
@@ -336,3 +336,13 @@ elif menu=="Portfolio Management":
                     )
 
         st.plotly_chart(fig)
+
+
+
+###################################################THEME & FORMATING################################
+# [theme]
+# base="light"
+# primaryColor="#e8aefd"
+# secondaryBackgroundColor="#dae3ff"
+# textColor="#000000"
+# font="serif"
