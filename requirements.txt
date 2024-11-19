@@ -1,12 +1,10 @@
 numpy
 pandas
-matplotlib.pyplot
-plotly.express
-plotly.graph_objects
-plotly.subplots
+matplotlib
+plotly
 streamlit
 streamlit_option_menu
-datetime
+datetime 
 yfinance
 requests
 stocknews
