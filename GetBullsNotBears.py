@@ -274,7 +274,6 @@ elif menu=="Monte Carlo Simulation":
         st.pyplot(plt)
         
         ending_price = simulation_df.iloc[-1:, :].values[0, ]
-        ending_price=ending_price.flatten()
         future_price_95ci = np.percentile(ending_price, 5)
         VaR = close_price.iloc[-1] - future_price_95ci
         st.write('Value at Risk (VaR) at 95% confidence interval is: ' + str(np.round(VaR, 2)) + ' USD')
