@@ -264,7 +264,7 @@ elif menu=="Monte Carlo Simulation":
         plt.figure(figsize=(15, 10))
 
         plt.plot(simulation_df)
-        plt.axhline(y=close_price.iloc[-1], color='black',linewidth=1.5)
+        plt.axhline(y=close_price.iloc[-1].squeeze(), color='black',linewidth=1.5)
         plt.title('Monte Carlo simulation for AAPL stock price in next 200 days')
         plt.xlabel('Day')
         plt.ylabel('Price')
