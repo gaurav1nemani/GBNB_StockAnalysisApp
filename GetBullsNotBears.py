@@ -85,7 +85,7 @@ if menu=="Summary":
                                 fill='tozeroy', fillcolor='rgba(133, 133, 241, 0.2)', showlegend=False)
         fig.add_trace(area_plot, secondary_y=True)
 
-        bar_plot = go.Bar(x=stock_data.index, y=stock_data['Volume'], marker_color=np.where(stock_data['Close'].pct_change() < 0, 'red', 'green'),
+        bar_plot = go.Bar(x=stock_data.index, y=stock_data['Volume'].squeeze(), marker_color=np.where(stock_data['Close'].pct_change() < 0, 'red', 'green'),
                         showlegend=False)
         fig.add_trace(bar_plot, secondary_y=False)
 
@@ -144,10 +144,10 @@ elif menu=="Chart":
             fig_candle = make_subplots(specs=[[{"secondary_y": True}]])
             candlestick_figure = go.Candlestick(
                 x=stock_data.index,
-                open=stock_data['Open'],
-                high=stock_data['High'],
-                low=stock_data['Low'],
-                close=stock_data['Adj Close']
+                open=stock_data['Open'].squeeze(),
+                high=stock_data['High'].squeeze(),
+                low=stock_data['Low'].squeeze(),
+                close=stock_data['Adj Close'].squeeze()
                 )
             fig_candle.add_trace(candlestick_figure, secondary_y=True)
 
@@ -166,14 +166,14 @@ elif menu=="Chart":
                     ])
                 ))
 
-            volume_plot = go.Bar(x=stock_data.index, y=stock_data['Volume'], marker_color=np.where(stock_data['Close'].pct_change() < 0, 'red', 'green'),
+            volume_plot = go.Bar(x=stock_data.index, y=stock_data['Volume'].squeeze(), marker_color=np.where(stock_data['Close'].pct_change() < 0, 'red', 'green'),
                             showlegend=False)
             fig_candle.add_trace(volume_plot, secondary_y=False)
 
             moving_avg=stock_data['Adj Close'].rolling(window=50).mean()
             moving_plot = go.Scatter(
                 x=stock_data.index, 
-                y=moving_avg, 
+                y=moving_avg.squeeze(), 
                 mode='lines',
                 name='50 day moving average',
                 line=dict(color='blue'),
