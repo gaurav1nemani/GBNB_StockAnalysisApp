@@ -14,10 +14,15 @@ import requests
 import stocknews
 from stocknews import StockNews
 
-#reference: 1. Minh Notes, 2.Streamlit Documentation and Streamlit Community, 3. youtube: financial programing with Ritvick, CFA, 4. Youtube: Coding is Fun, 5. Youtube: Intrendias, 6. MBD & Ara ,7. app icon attribution: <a href="https://www.flaticon.com/free-icons/stock-market" title="stock market icons">Stock market icons created by Freepik - Flaticon</a>
-st.set_page_config(page_title="Get Bulls Not Bears", layout="wide")
-
 icon_placeholder= "https://raw.githubusercontent.com/gaurav1nemani/GBNB/main/Assets/GBNB%20Icon.png"
+sidebar_icon_placeholder="https://raw.githubusercontent.com/gaurav1nemani/GBNB/main/Assets/GBNB%20Icon.png"
+
+#reference: 1. Minh Notes, 2.Streamlit Documentation and Streamlit Community, 3. youtube: financial programing with Ritvick, CFA, 4. Youtube: Coding is Fun, 5. Youtube: Intrendias, 6. MBD & Ara ,7. app icon attribution: <a href="https://www.flaticon.com/free-icons/stock-market" title="stock market icons">Stock market icons created by Freepik - Flaticon</a>
+st.set_page_config(page_title="Get Bulls Not Bears", page_icon=icon_placeholder, layout="wide")
+
+# Sidebar icon
+st.sidebar.image(sidebar_icon_placeholder, width=30)
+
 st.markdown(
     f"""
     <div style="display: flex; align-items: center; gap: 10px;">
@@ -28,20 +33,20 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-sidebar_icon_placeholder="https://raw.githubusercontent.com/gaurav1nemani/GBNB/main/Assets/GBNB%20Icon.png"
-# Sidebar with ticker input and app icon
-st.sidebar.markdown(
-    f"""
-    <div style="display: flex; align-items: center; gap: 10px;">
-        <img src="{sidebar_icon_placeholder}" alt="Sidebar Icon" style="height: 30px;"> 
-    </div>
-    """,
-    unsafe_allow_html=True,
-)
+# # Sidebar with ticker input and app icon
+# st.sidebar.markdown(
+#     f"""
+#     <div style="display: flex; align-items: center; gap: 10px;">
+#         <img src="{sidebar_icon_placeholder}" alt="Sidebar Icon" style="height: 30px;"> 
+#     </div>
+#     """,
+#     unsafe_allow_html=True,
+# )
 
 #Make the side bar with the ticker, start date, end date with update button
 st.sidebar.header('Enter the stock:')
 st.sidebar.button("Update Data", type="primary")
+csv=""
 st.sidebar.download_button("Download Data as CSV", data=csv, file_name=f'Stockdata_{datetime.now().date()}.csv')
 
 global ticker
@@ -55,7 +60,7 @@ global end_date
 end_date=st.sidebar.date_input('End Date', format="DD/MM/YYYY")
 
 stock_data=yf.download(ticker, start=start_date, end=end_date)
-csv = stock_data.to_csv(index=True)
+csv=stock_data.to_csv(index=True)
 
 #make the menu option
 menu=option_menu(
