@@ -45,10 +45,6 @@ st.markdown(
 
 #Make the side bar with the ticker, start date, end date with update button
 st.sidebar.header('Enter the stock:')
-st.sidebar.button("Update Data", type="primary")
-csv=""
-st.sidebar.download_button("Download Data as CSV", data=csv, file_name=f'Stockdata_{datetime.now().date()}.csv')
-
 global ticker
 ticker_list = pd.read_html('https://en.wikipedia.org/wiki/List_of_S%26P_500_companies')[0]['Symbol']
 ticker = st.sidebar.selectbox("Ticker", ticker_list)
@@ -61,6 +57,9 @@ end_date=st.sidebar.date_input('End Date', format="DD/MM/YYYY")
 
 stock_data=yf.download(ticker, start=start_date, end=end_date)
 csv=stock_data.to_csv(index=True)
+
+st.sidebar.button("Update Data", type="primary")
+st.sidebar.download_button("Download Data as CSV", data=csv, file_name=f'Stockdata_{datetime.now().date()}.csv')
 
 #make the menu option
 menu=option_menu(
