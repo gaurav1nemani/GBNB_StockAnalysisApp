@@ -1,3 +1,8 @@
+################################################################
+##      GET BULL NOT BEARS    ## STOCK ANALYSIS APP           ##
+################################################################
+
+
 import numpy as np
 import pandas as pd
 from pandas import DataFrame as df
@@ -371,3 +376,20 @@ elif menu=="Portfolio Analysis":
                     )
 
         st.plotly_chart(fig)
+
+
+# References:-
+
+# 1. Professor Minh, Professor Juliana and Professor Fernando (Financial Programming) MBD Class 2024, IESEG School of Management, Lille
+# 2. https://stackoverflow.com/questions/44449139/change-date-format-mm-dd-yyyy-to-mm-dd-yyyy-in-macro-vba
+# 3. Streamlit Documentation and Community
+# 4. Numpy Documentation and Community
+# 5. Pandas Documentation and Community
+# 6. Matplotlib Documentation and Community
+# 7. Plotly Documentation and Community
+# 8. StockNews API Documentation and Community
+# 9. youtube: financial programing with Ritvick, CFA
+# 10. Youtube: Coding is Fun
+# 11. Youtube: Intrendias
+# 12. Arajem Aboudi & Paul Gaillard, MBD 2024, IESEG School of Management (Thank you for all the help! :) )
+# 13. MBD Class 2024, IESEG School of Management
