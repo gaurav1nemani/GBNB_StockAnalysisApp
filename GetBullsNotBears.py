@@ -181,6 +181,7 @@ elif menu=="Chart":
                 low=stock_data['Low'].squeeze(),
                 close=stock_data['Adj Close'].squeeze()
                 )
+            fig_candle.update_layout(height=800)
             fig_candle.add_trace(candlestick_figure, secondary_y=True)
 
             fig_candle.update_xaxes(
