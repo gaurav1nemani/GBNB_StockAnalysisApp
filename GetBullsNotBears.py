@@ -14,7 +14,7 @@ import requests
 import stocknews
 from stocknews import StockNews
 
-#reference: 1. Minh Notes, 2.Streamlit Documentation and Streamlit Community, 3. youtube: financial programing with Ritvick, CFA, 4. Youtube: Coding is Fun, 5. Youtube: Intrendias
+#reference: 1. Minh Notes, 2.Streamlit Documentation and Streamlit Community, 3. youtube: financial programing with Ritvick, CFA, 4. Youtube: Coding is Fun, 5. Youtube: Intrendias, 6. MBD & Ara
 st.set_page_config(layout="wide")
 st.title('Get Bulls Not Bears')
 
@@ -81,7 +81,7 @@ if menu=="Summary":
 
         fig = make_subplots(specs=[[{"secondary_y": True}]])
 
-        area_plot = go.Scatter(x=stock_data.index, y=stock_data['Adj Close'],
+        area_plot = go.Scatter(x=stock_data.index, y=stock_data['Adj Close'].squeeze(),
                                 fill='tozeroy', fillcolor='rgba(133, 133, 241, 0.2)', showlegend=False)
         fig.add_trace(area_plot, secondary_y=True)
 
@@ -121,7 +121,7 @@ elif menu=="Chart":
         if ticker !='':
             line_chart_figure=px.line(
                 x=stock_data.index, 
-                y=stock_data['Adj Close']
+                y=stock_data['Adj Close'].squeeze()
             )
             line_chart_figure.update_xaxes(
                 rangeslider_visible=False,
