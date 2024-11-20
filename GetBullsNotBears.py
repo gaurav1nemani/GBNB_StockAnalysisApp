@@ -295,7 +295,7 @@ elif menu=="News":
         sentiment_data=news_data['sentiment_summary'][i]
         st.write(f'News Sentiment: {sentiment_data}')
 
-elif menu=="Portfolio Management":
+elif menu=="Portfolio Analysis":
     selected_stock=st.multiselect('Select the stocks to the portfolio: (recommended max. 10)', ticker_list)
         
     if selected_stock !='':
