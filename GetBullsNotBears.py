@@ -14,13 +14,35 @@ import requests
 import stocknews
 from stocknews import StockNews
 
-#reference: 1. Minh Notes, 2.Streamlit Documentation and Streamlit Community, 3. youtube: financial programing with Ritvick, CFA, 4. Youtube: Coding is Fun, 5. Youtube: Intrendias, 6. MBD & Ara
-st.set_page_config(layout="wide")
-st.title('Get Bulls Not Bears')
+#reference: 1. Minh Notes, 2.Streamlit Documentation and Streamlit Community, 3. youtube: financial programing with Ritvick, CFA, 4. Youtube: Coding is Fun, 5. Youtube: Intrendias, 6. MBD & Ara ,7. app icon attribution: <a href="https://www.flaticon.com/free-icons/stock-market" title="stock market icons">Stock market icons created by Freepik - Flaticon</a>
+st.set_page_config(page_title="Get Bulls Not Bears", layout="wide")
 
+icon_placeholder= "https://raw.githubusercontent.com/gaurav1nemani/GBNB/main/Assets/GBNB%20Icon.png"
+st.markdown(
+    f"""
+    <div style="display: flex; align-items: center; gap: 10px;">
+        <img src="{icon_placeholder}" alt="App Icon" style="height: 50px;"> 
+        <h1 style="margin: 0;">Get Bulls Not Bears</h1>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
+
+sidebar_icon_placeholder="https://raw.githubusercontent.com/gaurav1nemani/GBNB/main/Assets/GBNB%20Icon.png"
+# Sidebar with ticker input and app icon
+st.sidebar.markdown(
+    f"""
+    <div style="display: flex; align-items: center; gap: 10px;">
+        <img src="{sidebar_icon_placeholder}" alt="Sidebar Icon" style="height: 30px;"> 
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
 
 #Make the side bar with the ticker, start date, end date with update button
 st.sidebar.header('Enter the stock:')
+st.sidebar.button("Update Data", type="primary")
+st.sidebar.download_button("Download Data as CSV", data=csv, file_name=f'Stockdata_{datetime.now().date()}.csv')
 
 global ticker
 ticker_list = pd.read_html('https://en.wikipedia.org/wiki/List_of_S%26P_500_companies')[0]['Symbol']
@@ -32,12 +54,8 @@ start_date = st.sidebar.date_input('Start Date', value=datetime.today()-timedelt
 global end_date
 end_date=st.sidebar.date_input('End Date', format="DD/MM/YYYY")
 
-#get stock data
 stock_data=yf.download(ticker, start=start_date, end=end_date)
 csv = stock_data.to_csv(index=True)
-
-st.sidebar.button("Update Data", type="primary")
-st.sidebar.download_button("Download Data as CSV", data=csv, file_name=f'Stockdata_{datetime.now().date()}.csv')
 
 #make the menu option
 menu=option_menu(
@@ -48,16 +66,17 @@ menu=option_menu(
     orientation="horizontal"
 )
 
+#Summary Page
 if menu=="Summary":
 
     st.header("Company Information")
     st.write(yf.Ticker(ticker).info.get('longBusinessSummary'))
     
     key_info=yf.Ticker(ticker).info
-    col1, col2=st.columns([0.3,0.7],gap="small",vertical_alignment="top")
+    col1, col2=st.columns([0.4,0.6], gap="small", vertical_alignment="top")
 
     with col1:
-
+        #Key Statistics
         st.header("Key Statistics")
         key_statistics1 = { 
         'Market Cap': key_info.get('marketCap'), 
@@ -78,7 +97,7 @@ if menu=="Summary":
         st.write(key_statistics_df1)
 
     with col2:
-
+        # Area plot and bar plot for stock data
         fig = make_subplots(specs=[[{"secondary_y": True}]])
 
         area_plot = go.Scatter(x=stock_data.index, y=stock_data['Adj Close'].squeeze(),
@@ -105,7 +124,10 @@ if menu=="Summary":
                 )
         )
 
-        fig.update_layout(template='plotly_white')
+        fig.update_layout(
+            template='plotly_white',
+            margin=dict(t=10, b=10)
+            )
         fig.update_yaxes(secondary_y=False)
 
         st.plotly_chart(fig)
@@ -114,6 +136,7 @@ if menu=="Summary":
     share_holders = yf.Ticker(ticker).major_holders 
     st.table(share_holders)
 
+#Chart Page
 elif menu=="Chart":
 
     chart_type=st.selectbox("Select the chart style: ", options=["Line Chart", "Candelstick Chart"])
@@ -170,6 +193,7 @@ elif menu=="Chart":
                             showlegend=False)
             fig_candle.add_trace(volume_plot, secondary_y=False)
 
+            #Add moving average line
             moving_avg=stock_data['Adj Close'].rolling(window=50).mean()
             moving_plot = go.Scatter(
                 x=stock_data.index, 
@@ -183,6 +207,7 @@ elif menu=="Chart":
 
         st.plotly_chart(fig_candle)
 
+#Financials Page
 elif menu=="Financials":
     
     stock=yf.Ticker(ticker)
@@ -218,6 +243,7 @@ elif menu=="Financials":
             ist_data=stock.quarterly_financials
             st.write(ist_data)
 
+#Monte Carlo Simulation Page
 elif menu=="Monte Carlo Simulation":
     
     def get_randomseed():
@@ -273,6 +299,7 @@ elif menu=="Monte Carlo Simulation":
         
         st.pyplot(plt)
         
+        #Add VAR Value
         ending_price = simulation_df.iloc[-1:, :].values
         future_price_95ci = np.percentile(ending_price, 5)
         VaR = close_price.iloc[-1] - future_price_95ci
@@ -280,6 +307,7 @@ elif menu=="Monte Carlo Simulation":
     
     get_montecarlo(stock_data, random_seed, time_horizon, nbr_simulations)
 
+#News Page
 elif menu=="News":
     st.header(f'News of {ticker}')
     sn=StockNews(ticker, save_news=False)
@@ -289,11 +317,14 @@ elif menu=="News":
         st.write(news_data['published'][i])
         st.write(news_data['title'][i])
         st.write(news_data['summary'][i])
+
+        #Get Sentiment scores for future sentiment analysis
         sentiment_title_data=(news_data['sentiment_title'][i])
         st.write(f'Title Sentiment: {sentiment_title_data}')
         sentiment_data=news_data['sentiment_summary'][i]
         st.write(f'News Sentiment: {sentiment_data}')
 
+#Portfolio Analysis Page
 elif menu=="Portfolio Analysis":
     selected_stock=st.multiselect('Select the stocks to the portfolio: (recommended max. 10)', ticker_list)
         
@@ -336,13 +367,3 @@ elif menu=="Portfolio Analysis":
                     )
 
         st.plotly_chart(fig)
-
-
-
-###################################################THEME & FORMATING################################
-# [theme]
-# base="light"
-# primaryColor="#e8aefd"
-# secondaryBackgroundColor="#dae3ff"
-# textColor="#000000"
-# font="serif"
