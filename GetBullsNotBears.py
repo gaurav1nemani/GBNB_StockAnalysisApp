@@ -42,7 +42,7 @@ st.sidebar.download_button("Download Data as CSV", data=csv, file_name=f'Stockda
 #make the menu option
 menu=option_menu(
     menu_title=None,
-    options=["Summary", "Chart", "Financials", "Monte Carlo Simulation","News", "Portfolio Management"],
+    options=["Summary", "Chart", "Financials", "Monte Carlo Simulation","News", "Portfolio Analysis"],
     icons=["journal-text", "graph-up-arrow", "cash-coin", "bezier2", "newspaper", "briefcase"],
     default_index=0,
     orientation="horizontal"
