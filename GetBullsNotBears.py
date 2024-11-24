@@ -115,7 +115,7 @@ if menu=="Summary":
 
         bar_plot = go.Bar(x=stock_data.index, 
                         y=stock_data['Volume'].squeeze(), 
-                        marker_color=np.where(stock_data['pct_change'] < 0, 'red', 'green'),
+                        marker_color=np.where(stock_data['Close'].pct_change() < 0, 'red', 'green'),
                         showlegend=False
                     )
         fig.add_trace(bar_plot, secondary_y=False)
