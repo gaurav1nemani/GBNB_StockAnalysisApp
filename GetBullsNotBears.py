@@ -113,7 +113,7 @@ if menu=="Summary":
                                 fill='tozeroy', fillcolor='rgba(133, 133, 241, 0.2)', showlegend=False)
         fig.add_trace(area_plot, secondary_y=True)
 
-        bar_plot = go.Bar(x=stock_data.index, y=stock_data['Volume'].squeeze(), marker_color=np.where(stock_data['Close'].pct_change() < 0, 'red', 'green'),
+        bar_plot = go.Bar(x=stock_data.index, y=stock_data['Volume'], marker_color=np.where(stock_data['Close'].pct_change() < 0, 'red', 'green'),
                         showlegend=False)
         fig.add_trace(bar_plot, secondary_y=False)
 
