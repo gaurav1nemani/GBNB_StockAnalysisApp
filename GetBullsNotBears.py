@@ -177,7 +177,7 @@ elif menu=="Chart":
                 line_chart_figure.update_layout(
                         xaxis_title="Date",
                         yaxis_title="Adjusted Price"
-                )
+                    )
         st.plotly_chart(line_chart_figure)
 
     if chart_type=="Candelstick Chart":
