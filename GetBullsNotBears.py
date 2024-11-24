@@ -115,7 +115,7 @@ if menu=="Summary":
 
         bar_plot = go.Bar(x=stock_data.index, 
                         y=stock_data['Volume'].squeeze(), 
-                        marker=dict(color=np.where(stock_data['Close'].pct_change() < 0, 'red', 'green')),
+                        marker_color=np.where(stock_data['pct_change'] < 0, 'red', 'green'),
                         showlegend=False
                     )
         fig.add_trace(bar_plot, secondary_y=False)
@@ -137,9 +137,11 @@ if menu=="Summary":
         )
 
         fig.update_layout(
+            xaxis_title="Date",
+            yaxis_title="Adjusted Price",
             template='plotly_white',
             margin=dict(t=10, b=10)
-            )
+        )
         fig.update_yaxes(secondary_y=False)
 
         st.plotly_chart(fig)
@@ -172,6 +174,10 @@ elif menu=="Chart":
                         dict(label="MAX", step="all")
                     ])
                 ))
+                line_chart_figure.update_layout(
+                        xaxis_title="Date",
+                        yaxis_title="Adjusted Price"
+                )
         st.plotly_chart(line_chart_figure)
 
     if chart_type=="Candelstick Chart":
@@ -205,6 +211,10 @@ elif menu=="Chart":
             volume_plot = go.Bar(x=stock_data.index, y=stock_data['Volume'].squeeze(), marker_color=np.where(stock_data['Close'].pct_change() < 0, 'red', 'green'),
                             showlegend=False)
             fig_candle.add_trace(volume_plot, secondary_y=False)
+            fig_candle.update_layout(
+                        xaxis_title="Date",
+                        yaxis_title="Adjusted Price"
+            )
 
             #Add moving average line
             moving_avg=stock_data['Adj Close'].rolling(window=50).mean()
