@@ -296,7 +296,7 @@ elif menu=="Monte Carlo Simulation":
         for i in range(nbr_simulations):
     
             next_price = []
-            last_price = close_price[-1]
+            last_price = close_price.iloc[-1]
     
             for j in range(time_horizon):
                 future_return = np.random.normal(0, daily_volatility)
@@ -322,8 +322,7 @@ elif menu=="Monte Carlo Simulation":
         st.pyplot(plt)
         
         #Add VAR Value
-                #Add VAR Value
-        ending_price = simulation_df[-1].squeeze()
+        ending_price = simulation_df.iloc[-1].squeeze()
         ending_price = pd.to_numeric(ending_price, errors='coerce').dropna()
         future_price_95ci = np.percentile(ending_price, 5)
         VaR = close_price[-1] - future_price_95ci
