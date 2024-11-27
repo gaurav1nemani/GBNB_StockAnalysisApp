@@ -292,7 +292,6 @@ elif menu=="Monte Carlo Simulation":
         daily_return = close_price.pct_change().dropna()
         daily_volatility = daily_return.std()
         simulation_df = pd.DataFrame()
-        st.write(simulation_df.tail())  # Check the last few rows of the simulation data
 
 
         for i in range(nbr_simulations):
@@ -324,17 +323,11 @@ elif menu=="Monte Carlo Simulation":
         st.pyplot(plt)
         
         #Add VAR Value
-        
-        if not simulation_df.empty:
-            ending_price = simulation_df.iloc[-1].dropna()  # Remove NaN values
-            if not ending_price.empty:
-                future_price_95ci = np.percentile(ending_price, 5)
-                VaR = close_price[-1] - future_price_95ci
-                st.write(f'Value at Risk (VaR) at 95% confidence interval is: {VaR:.2f} USD')
-            else:
-                st.error("No valid data available for simulation.")
-        else:
-            st.error("Simulation data is empty.")
+        ending_price = simulation_df.iloc[-1]
+        future_price_95ci = np.percentile(ending_price, 5)
+        VaR = close_price[-1] - future_price_95ci
+        st.write('Value at Risk (VaR) at 95% confidence interval is: ' + str(np.round(VaR, 2)) + ' USD')
+    
     get_montecarlo(stock_data, random_seed, time_horizon, nbr_simulations)
 
 
