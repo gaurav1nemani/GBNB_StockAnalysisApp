@@ -269,7 +269,7 @@ elif menu=="Financials":
 #Monte Carlo Simulation Page
 elif menu=="Monte Carlo Simulation":
     # Check if there is sufficient data for simulation
-    if data.empty:
+    if stock_data.empty:
         st.error("No data available for Monte Carlo simulation.")
     else:
         # Create two columns
@@ -286,13 +286,13 @@ elif menu=="Monte Carlo Simulation":
                                        )
         
         # Calculate daily returns and their statistics
-        daily_returns = data['Close'].pct_change().dropna()  # Compute daily percentage change
+        daily_returns = stock_data['Close'].pct_change().dropna()  # Compute daily percentage change
         mean_return = daily_returns.mean()  # Mean of daily returns
         std_dev = daily_returns.std()  # Standard deviation of daily returns
         
         #Initialize an array to store simulated prices
         simulations = np.zeros((time_horizon, n_simulations))
-        last_price = data['Close'][-1]  # Get the last closing price as the starting price
+        last_price = stock_data['Close'][-1]  # Get the last closing price as the starting price
 
         # Perform Monte Carlo simulation
         for i in range(n_simulations):  # Loop through each simulation
