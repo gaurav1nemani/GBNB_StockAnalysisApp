@@ -266,68 +266,60 @@ elif menu=="Financials":
             ist_data=stock.quarterly_financials
             st.write(ist_data)
 
-#Monte Carlo Simulation Page
-elif menu=="Monte Carlo Simulation":
-    
-    def get_randomseed():
-        random_seed=st.number_input("Select a random seed (1-1000): ", min_value=1, max_value=1000)
-        return random_seed
-    
-    def get_timehorizon():
-        time_horizon=st.selectbox("Select time horizon (in days): ", options=[30, 60, 90])
-        return time_horizon
-    
-    def get_nbrsimulations():
-        nbr_simulations=st.selectbox("Select the number of simulations (200, 500, 1000): ", options=[200, 500, 1000])
-        return nbr_simulations
-    
-    random_seed=get_randomseed()
-    time_horizon=get_timehorizon()
-    nbr_simulations=get_nbrsimulations()
+elif menu == "Monte Carlo Simulation":
 
-    def get_montecarlo(stock_data, get_randomseed, get_timehorizon, get_nbrsimulations):
-        
+    def get_randomseed():
+        random_seed = st.number_input("Select a random seed (1-1000): ", min_value=1, max_value=1000)
+        return random_seed
+
+    def get_timehorizon():
+        time_horizon = st.selectbox("Select time horizon (in days): ", options=[30, 60, 90])
+        return time_horizon
+
+    def get_nbrsimulations():
+        nbr_simulations = st.selectbox("Select the number of simulations (200, 500, 1000): ", options=[200, 500, 1000])
+        return nbr_simulations
+
+    random_seed = get_randomseed()
+    time_horizon = get_timehorizon()
+    nbr_simulations = get_nbrsimulations()
+
+    def get_montecarlo(stock_data, random_seed, time_horizon, nbr_simulations):
         np.random.seed(random_seed)
         close_price = stock_data['Adj Close']
         daily_return = close_price.pct_change().dropna()
         daily_volatility = daily_return.std()
         simulation_df = pd.DataFrame()
 
-
         for i in range(nbr_simulations):
-    
             next_price = []
             last_price = close_price.iloc[-1]
-    
+
             for j in range(time_horizon):
                 future_return = np.random.normal(0, daily_volatility)
-
                 future_price = last_price * (1 + future_return)
-
                 next_price.append(future_price)
                 last_price = future_price
-    
+
             next_price_df = pd.Series(next_price).rename('sim' + str(i))
             simulation_df = pd.concat([simulation_df, next_price_df], axis=1)
 
         plt.figure(figsize=(10, 7))
-
         plt.plot(simulation_df)
-        plt.axhline(y=close_price.iloc[-1].squeeze(), color='black',linewidth=1.5)
-        plt.title('Monte Carlo simulation for AAPL stock price in next 200 days')
+        plt.axhline(y=close_price.iloc[-1], color='black', linewidth=1.5)
+        plt.title('Monte Carlo simulation for AAPL stock price')
         plt.xlabel('Day')
         plt.ylabel('Price')
-        plt.legend(['Current stock price is: ' + str(np.round(close_price.iloc[-1], 2))])
+        plt.legend(['Current stock price: ' + str(np.round(close_price.iloc[-1], 2))])
 
-        
         st.pyplot(plt)
-        
-        #Add VAR Value
+
+        # Add VaR value
         ending_price = simulation_df.iloc[-1]
         future_price_95ci = np.percentile(ending_price, 5)
-        VaR = close_price[-1] - future_price_95ci
-        st.write('Value at Risk (VaR) at 95% confidence interval is: ' + str(np.round(future_price_95ci, 2)) + ' USD')
-    
+        VaR = close_price.iloc[-1] - future_price_95ci
+        st.write('Value at Risk (VaR) at 95% confidence interval is: ' + str(np.round(VaR, 2)) + ' USD')
+
     get_montecarlo(stock_data, random_seed, time_horizon, nbr_simulations)
 
 
