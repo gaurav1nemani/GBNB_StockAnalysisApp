@@ -322,7 +322,7 @@ elif menu=="Monte Carlo Simulation":
         st.pyplot(plt)
         
         #Add VAR Value
-        ending_price = simulation_df.iloc[-1:, :].squeeze()
+        ending_price = simulation_df.iloc[-1].squeeze()
         ending_price = pd.to_numeric(ending_price, errors='coerce').dropna()
         future_price_95ci = np.percentile(ending_price, 5)
         VaR = close_price.iloc[-1] - future_price_95ci
