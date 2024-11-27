@@ -310,6 +310,8 @@ elif menu=="Monte Carlo Simulation":
             next_price_df = pd.Series(next_price).rename('sim' + str(i))
             simulation_df = pd.concat([simulation_df, next_price_df], axis=1)
 
+        VaR_95 = np.percentile(simulation_df.iloc[-1].squeeze(), 5)
+        
         plt.figure(figsize=(10, 7))
 
         plt.plot(simulation_df)
@@ -323,8 +325,6 @@ elif menu=="Monte Carlo Simulation":
         st.pyplot(plt)
         
         #Add VAR Value
-        st.write(simulation_df[-1])
-        VaR_95 = np.percentile(simulation_df[-1], 5)
         st.write(f"Value at Risk (VaR) at 95% confidence interval: *${VaR_95:.2f}*")
     
     get_montecarlo(stock_data, random_seed, time_horizon, nbr_simulations)
