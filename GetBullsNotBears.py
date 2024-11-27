@@ -286,7 +286,7 @@ elif menu=="Monte Carlo Simulation":
                                        )
         
         # Calculate daily returns and their statistics
-        daily_returns = stock_data['Close'].pct_change().dropna()  # Compute daily percentage change
+        daily_returns = stock_data['Adj Close'].pct_change().dropna()  # Compute daily percentage change
         mean_return = daily_returns.mean()  # Mean of daily returns
         std_dev = daily_returns.std()  # Standard deviation of daily returns
         
