@@ -292,7 +292,7 @@ elif menu=="Monte Carlo Simulation":
         
         #Initialize an array to store simulated prices
         simulations = np.zeros((time_horizon, n_simulations))
-        last_price = stock_data['Close'][-1]  # Get the last closing price as the starting price
+        last_price = stock_data['Adj Close'][-1]  # Get the last closing price as the starting price
 
         # Perform Monte Carlo simulation
         for i in range(n_simulations):  # Loop through each simulation
