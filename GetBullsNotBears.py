@@ -315,17 +315,14 @@ elif menu=="Monte Carlo Simulation":
         plt.legend(['Current stock price is: ' + str(np.round(close_price.iloc[-1], 2))])
         st.pyplot(plt)
     
-        # Calculate Value at Risk (VaR) at 95% confidence
-        # Ensure the data is a 1-dimensional array for percentile calculation
-        final_prices = simulation_df.iloc[-1].values  # Extract last row as numpy array
-        var_95 = np.percentile(final_prices, 5)  # 5th percentile for 95% VaR
-        st.subheader(f"Value at Risk (VaR) at 95% confidence: {round(var_95, 2)}")
-
-
+        # # Calculate Value at Risk (VaR) at 95% confidence
+        # # Ensure the data is a 1-dimensional array for percentile calculation
+        # final_prices = simulation_df.iloc[-1].values  # Extract last row as numpy array
+        # var_95 = np.percentile(final_prices, 5)  # 5th percentile for 95% VaR
+        # st.subheader(f"Value at Risk (VaR) at 95% confidence: {round(var_95, 2)}")
 
     get_montecarlo(stock_data, random_seed, time_horizon, nbr_simulations)
 
- 
 #News Page
 elif menu=="News":
     st.header(f'News of {ticker}')
