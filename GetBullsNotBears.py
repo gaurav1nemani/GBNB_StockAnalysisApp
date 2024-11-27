@@ -289,9 +289,8 @@ elif menu=="Monte Carlo Simulation":
         
         np.random.seed(random_seed)
         close_price = stock_data['Adj Close']
-        daily_return = close_price.pct_change()
-        daily_volatility = np.std(daily_return)
-
+        daily_return = close_price.pct_change().dropna()
+        daily_volatility = daily_return.std()
         simulation_df = pd.DataFrame()
 
         for i in range(nbr_simulations):
@@ -310,7 +309,7 @@ elif menu=="Monte Carlo Simulation":
             next_price_df = pd.Series(next_price).rename('sim' + str(i))
             simulation_df = pd.concat([simulation_df, next_price_df], axis=1)
 
-        plt.figure(figsize=(15, 10))
+        plt.figure(figsize=(12, 9))
 
         plt.plot(simulation_df)
         plt.axhline(y=close_price.iloc[-1].squeeze(), color='black',linewidth=1.5)
