@@ -285,14 +285,13 @@ elif menu=="Monte Carlo Simulation":
     time_horizon=get_timehorizon()
     nbr_simulations=get_nbrsimulations()
 
-    def get_montecarlo(stock_data, get_randomseed, get_timehorizon, get_nbrsimulations):
-        
+    def get_montecarlo(stock_data, random_seed, time_horizon, nbr_simulations):
         np.random.seed(random_seed)
         close_price = stock_data['Adj Close']
         daily_return = close_price.pct_change().dropna()
         daily_volatility = daily_return.std()
         simulation_df = pd.DataFrame()
-
+    
         for i in range(nbr_simulations):
             next_price = []
             last_price = close_price.iloc[-1]
@@ -305,20 +304,24 @@ elif menu=="Monte Carlo Simulation":
     
             next_price_df = pd.Series(next_price).rename('sim' + str(i))
             simulation_df = pd.concat([simulation_df, next_price_df], axis=1)
-        
+    
         # Plot the simulations
         plt.figure(figsize=(10, 7))
         plt.plot(simulation_df)
         plt.axhline(y=close_price.iloc[-1].squeeze(), color='black', linewidth=1.5)
-        plt.title(f'Monte Carlo Simulation for {ticker} Stock Price in Next {time_horizon} Days')
+        plt.title(f'Monte Carlo simulation for {ticker} stock price in next {time_horizon} days')
         plt.xlabel('Day')
         plt.ylabel('Price')
         plt.legend(['Current stock price is: ' + str(np.round(close_price.iloc[-1], 2))])
         st.pyplot(plt)
+    
+        # Calculate Value at Risk (VaR) at 95% confidence
+        # Ensure the data is a 1-dimensional array for percentile calculation
+        final_prices = simulation_df.iloc[-1].values  # Extract last row as numpy array
+        var_95 = np.percentile(final_prices, 5)  # 5th percentile for 95% VaR
+        st.subheader(f"Value at Risk (VaR) at 95% confidence: {round(var_95, 2)}")
 
-        # Calculate the VaR at a 95% confidence level (i.e., 5% quantile)
-        var_95 = np.percentile(simulation_df.iloc[-1], 5)
-        st.subheader(f"Value at Risk (VaR) at 95% Confidence Level: ${round(close_price.iloc[-1] - var_95, 2)}")
+
 
     get_montecarlo(stock_data, random_seed, time_horizon, nbr_simulations)
 
