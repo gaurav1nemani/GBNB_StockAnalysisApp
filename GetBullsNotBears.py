@@ -310,7 +310,7 @@ elif menu=="Monte Carlo Simulation":
             next_price_df = pd.Series(next_price).rename('sim' + str(i))
             simulation_df = pd.concat([simulation_df, next_price_df], axis=1)
 
-        plt.figure(figsize=(12, 9))
+        plt.figure(figsize=(10, 7))
 
         plt.plot(simulation_df)
         plt.axhline(y=close_price.iloc[-1].squeeze(), color='black',linewidth=1.5)
