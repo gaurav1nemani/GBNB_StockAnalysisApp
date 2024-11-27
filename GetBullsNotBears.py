@@ -326,7 +326,7 @@ elif menu=="Monte Carlo Simulation":
         ending_price = simulation_df.iloc[-1]
         future_price_95ci = np.percentile(ending_price, 5)
         VaR = close_price[-1] - future_price_95ci
-        st.write('Value at Risk (VaR) at 95% confidence interval is: ' + str(np.round(future_price_95ci, 2)) + ' USD')
+        st.write(f'Value at Risk (VaR) at 95% confidence interval is: {(np.round(future_price_95ci, 2)} USD')
     
     get_montecarlo(stock_data, random_seed, time_horizon, nbr_simulations)
 
