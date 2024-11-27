@@ -268,68 +268,68 @@ elif menu=="Financials":
 
 #Monte Carlo Simulation Page
 elif menu=="Monte Carlo Simulation":
-    # Check if there is sufficient data for simulation
-    if stock_data.empty:
-        st.error("No data available for Monte Carlo simulation.")
-    else:
-        # Create two columns
-        col1, col2 = st.columns(2)
+    
+    def get_randomseed():
+        random_seed=st.number_input("Select a random seed (1-1000): ", min_value=1, max_value=1000)
+        return random_seed
+    
+    def get_timehorizon():
+        time_horizon=st.selectbox("Select time horizon (in days): ", options=[30, 60, 90])
+        return time_horizon
+    
+    def get_nbrsimulations():
+        nbr_simulations=st.selectbox("Select the number of simulations (200, 500, 1000): ", options=[200, 500, 1000])
+        return nbr_simulations
+    
+    random_seed=get_randomseed()
+    time_horizon=get_timehorizon()
+    nbr_simulations=get_nbrsimulations()
+
+    def get_montecarlo(stock_data, get_randomseed, get_timehorizon, get_nbrsimulations):
         
-        # Number of simulations in the first column
-        with col1:
-            n_simulations = st.selectbox("Number of Simulations", [200, 500, 1000] # Options for simulations
-                                        )
+        np.random.seed(random_seed)
+        close_price = stock_data['Adj Close']
+        daily_return = close_price.pct_change().dropna()
+        daily_volatility = daily_return.std()
+        simulation_df = pd.DataFrame()
+
+
+        for i in range(nbr_simulations):
+    
+            next_price = []
+            last_price = close_price.iloc[-1]
+    
+            for j in range(time_horizon):
+                future_return = np.random.normal(0, daily_volatility)
+
+                future_price = last_price * (1 + future_return)
+
+                next_price.append(future_price)
+                last_price = future_price
+    
+            next_price_df = pd.Series(next_price).rename('sim' + str(i))
+            simulation_df = pd.concat([simulation_df, next_price_df], axis=1)
+
+        plt.figure(figsize=(10, 7))
+
+        plt.plot(simulation_df)
+        plt.axhline(y=close_price.iloc[-1].squeeze(), color='black',linewidth=1.5)
+        plt.title('Monte Carlo simulation for AAPL stock price in next 200 days')
+        plt.xlabel('Day')
+        plt.ylabel('Price')
+        plt.legend(['Current stock price is: ' + str(np.round(close_price.iloc[-1], 2))])
+
         
-        # Time horizon for simulation in the second column
-        with col2:
-            time_horizon = st.selectbox("Time Horizon (days)", [30, 60, 90] # Options for time horizon
-                                       )
-        
-        # Calculate daily returns and their statistics
-        daily_returns = stock_data['Adj Close'].pct_change().dropna()  # Compute daily percentage change
-        mean_return = daily_returns.mean()  # Mean of daily returns
-        std_dev = daily_returns.std()  # Standard deviation of daily returns
-        
-        #Initialize an array to store simulated prices
-        simulations = np.zeros((time_horizon, n_simulations))
-        last_price = stock_data['Adj Close'][-1]  # Get the last closing price as the starting price
-
-        # Perform Monte Carlo simulation
-        for i in range(n_simulations):  # Loop through each simulation
-            price = last_price  # Start with the last known price
-            for t in range(time_horizon):  # Simulate prices for the given time horizon
-                price *= (1 + np.random.normal(mean_return, std_dev))  # Apply random returns
-                simulations[t, i] = price  # Store simulated price
-
-        # Calculate Value at Risk (VaR) at 95% confidence level
-        VaR_95 = np.percentile(simulations[-1], 5)  # 5th percentile of the final simulated prices
-
-        # Plot the Monte Carlo simulation results
-        plt.figure(figsize=(10, 6))  # Set figure size
-        
-        # Use "Magma" colormap for better visualization
-        cmap = plt.get_cmap("magma")
-        for i in range(n_simulations):  # Loop through each simulation to plot
-            plt.plot(simulations[:, i], color=cmap(i / n_simulations))  # Apply colormap
-
-        # Highlight the current stock price with a horizontal line
-        current_price_line = plt.axhline(
-            y=last_price, 
-            color='darkgrey', 
-            linewidth=2.5, 
-            linestyle='--', 
-            label=f'Current stock price: ${last_price:.2f}'
-        )
-
-
-        plt.title(f"{n_simulations} Monte Carlo Simulations for {stock_symbol} over {time_horizon} Days")
-        plt.legend([current_price_line], [f'Current stock price: ${last_price:.2f}'])
-        plt.xlabel("Day")
-        plt.ylabel("Price")
         st.pyplot(plt)
-
-        st.write(f"Value at Risk (VaR) at 95% confidence interval: *${VaR_95:.2f}*") 
         
+        #Add VAR Value
+        VaR_95 = np.percentile(simulation_df[-1], 5)
+        st.write(f"Value at Risk (VaR) at 95% confidence interval: *${VaR_95:.2f}*")
+    
+    get_montecarlo(stock_data, random_seed, time_horizon, nbr_simulations)
+
+
+    
 #News Page
 elif menu=="News":
     st.header(f'News of {ticker}')
