@@ -322,14 +322,30 @@ elif menu=="Monte Carlo Simulation":
         st.pyplot(plt)
         
         #Add VAR Value
+                
         ending_price = simulation_df.iloc[-1].squeeze()
+        
+        # Convert to numeric and drop NaNs
         ending_price = pd.to_numeric(ending_price, errors='coerce').dropna()
-        future_price_95ci = np.percentile(ending_price, 5)
-        VaR = close_price.iloc[-1] - future_price_95ci
-        st.write('Value at Risk (VaR) at 95% confidence interval is: ' + str(np.round(VaR, 2)) + ' USD')
-    
+        
+        # Check if ending_price is empty after cleaning
+        if ending_price.empty:
+            st.error("Error: The simulation resulted in no valid ending prices. Please check your input parameters.")
+        else:
+            # Calculate the 5th percentile
+            future_price_95ci = np.percentile(ending_price, 5)
+        
+            # Calculate VaR
+            VaR = close_price.iloc[-1] - future_price_95ci
+        
+            # Display result
+            st.write(f"Value at Risk (VaR) at 95% confidence interval is: {np.round(VaR, 2)} USD")
+        
+        # Call the Monte Carlo function
     get_montecarlo(stock_data, random_seed, time_horizon, nbr_simulations)
 
+
+    
 #News Page
 elif menu=="News":
     st.header(f'News of {ticker}')
