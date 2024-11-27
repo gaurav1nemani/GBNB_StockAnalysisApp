@@ -323,6 +323,7 @@ elif menu=="Monte Carlo Simulation":
         st.pyplot(plt)
         
         #Add VAR Value
+        st.write(simulation_df[-1])
         VaR_95 = np.percentile(simulation_df[-1], 5)
         st.write(f"Value at Risk (VaR) at 95% confidence interval: *${VaR_95:.2f}*")
     
