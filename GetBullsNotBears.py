@@ -325,7 +325,6 @@ elif menu=="Monte Carlo Simulation":
         #Add VAR Value
         ending_price = simulation_df.iloc[-1:, :].squeeze()
         ending_price = pd.to_numeric(ending_price, errors='coerce').dropna()
-        st.write(ending_price)
         future_price_95ci = np.percentile(ending_price, 5)
         VaR = close_price.iloc[-1] - future_price_95ci
         st.write('Value at Risk (VaR) at 95% confidence interval is: ' + str(np.round(VaR, 2)) + ' USD')
